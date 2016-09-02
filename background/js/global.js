@@ -171,36 +171,65 @@ function getInput(){
 
 };
 
+var addSubscriptLine = function(){
+  if($(".markdown-body .subscriptLine").length){
+	$(".markdown-body .subscriptLine").nextAll().remove();
+  }else{
+	var subxcriptLine = $('<hr class="subscriptLine" style="border:1px dashed #000;">');
+	$(".editormd-preview-container").append(subxcriptLine);
+  }
+}
+
+
 var subscript = function(){
-	var addSubscriptLine = function(){
-	  if($(".markdown-body .subscriptLine").length){
-		$(".markdown-body .subscriptLine").nextAll().remove();
-	  }else{
-		var subxcriptLine = $('<hr class="subscriptLine" style="border:1px dashed #000;">');
-		$(".editormd-preview-container").append(subxcriptLine);
-	  }
-	}
 	var boxSubscripts = [];
 	var boxSubscriptsMatch = [];
 	var subscriptsCounter = 1;
-  var subscriptsCounterFlag = 0;
+  	var subscriptsCounterFlag = 0;
 	$(".markdown-body").children('p').each(function(){
-		var matchTest = $(this).text().match(/^( )*\[\^.*?\][:：]/);
+		var inputStr  = $(this).html().split('<br>');
+		var x;
+		matchTest = false;
+		if(inputStr.length>1){
+			for(x=0; x<inputStr.length; x++){
+				var matchTest = inputStr[x].match(/^( )*\[\^.*?\][:：]/);
+				if(matchTest) break;
+			}
+		}else{
+			var matchTest = inputStr[0].match(/^( )*\[\^.*?\][:：]/);
+		}
+
 		if(matchTest){
 		  var matchSub = matchTest[0].substring(0,matchTest[0].length-1);
-      matchSub = matchSub.replace(/^[\s]*/g, "");
+      		  matchSub = matchSub.replace(/^[\s]*/g, "");
 		  matchBox = {
 			'text' : matchSub,
 			'id'   : subscriptsCounter
 		  };
 		  boxSubscriptsMatch.push(matchBox);
-		  var _dom = $(this);
-		  _dom.html(_dom.html().replace(/^( )*\[\^.*?\][:：]/,'['+subscriptsCounter+'] : '));
-		  var _href = 'Subscripts_'+subscriptsCounter+'_stpircsbuS';
-		  _dom.attr('id', _href);
-		  _dom.attr('name', _href);
-		  boxSubscripts.push(_dom);
-		  $(this).remove();
+		  if(inputStr.length==1){
+			var _dom = $(this);
+			_dom.html(_dom.html().replace(/^( )*\[\^.*?\][:：]/,'['+subscriptsCounter+'] : '));
+			var _href = 'Subscripts_'+subscriptsCounter+'_stpircsbuS';
+			_dom.attr('id', _href);
+			_dom.attr('name', _href);
+			boxSubscripts.push(_dom);
+			$(this).remove();
+		  }else{
+			var _dom = $('<p>'+inputStr[x]+'</p>');
+			_dom.html(_dom.html().replace(/^( )*\[\^.*?\][:：]/,'['+subscriptsCounter+'] : '));
+			var _href = 'Subscripts_'+subscriptsCounter+'_stpircsbuS';
+			_dom.attr('id', _href);
+			_dom.attr('name', _href);
+			boxSubscripts.push(_dom);
+			var dropSpecialHtml = '';
+			for(var y =0 ; y<inputStr.length; y++){
+				if(y==x) continue;
+				dropSpecialHtml += inputStr[y];
+			}
+			$(this).html(dropSpecialHtml);
+		  }
+
 		  subscriptsCounter++;
       if(!subscriptsCounterFlag) subscriptsCounterFlag = 1;
 		}
