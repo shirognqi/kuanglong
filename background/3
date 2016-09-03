@@ -36,7 +36,6 @@ function getInput(){
 	var mathBlockKeyWords = ['math', 'katex', 'latex'];
 	var flowBlockKeyWord  = 'flow';
 	var seqBlockKeyWord   = 'seq';
-	var seqBlockKeyWord2  = 'sequence';
 	var codeBlock = [],
 		flowBlock = [],
 		seqBlock  = [];
@@ -57,7 +56,7 @@ function getInput(){
 		if(type === flowBlockKeyWord){
 		  innerHTMLDropCovers     = strToSepcial(innerHTMLDropCovers);
 		  flowBlock.push(innerHTMLDropCovers);
-		}else if(type === seqBlockKeyWord || type === seqBlockKeyWord2){
+		}else if(type === seqBlockKeyWord){
 		  innerHTMLDropCovers     = strToSepcial(innerHTMLDropCovers);
 		  seqBlock.push(innerHTMLDropCovers);
 		}else{
@@ -168,70 +167,41 @@ function getInput(){
   // editor.insertValue(" ");
   // editor.setSelection({line:position.line, ch:position.ch}, {line:position.line, ch:(position.ch+1)});
   // editor.replaceSelection("");
-	return ret;
+	// return ret;
 
 };
 
-var addSubscriptLine = function(){
-  if($(".markdown-body .subscriptLine").length){
-	$(".markdown-body .subscriptLine").nextAll().remove();
-  }else{
-	var subxcriptLine = $('<hr class="subscriptLine" style="border:1px dashed #000;">');
-	$(".editormd-preview-container").append(subxcriptLine);
-  }
-}
-
-
 var subscript = function(){
+	return ;l
+	var addSubscriptLine = function(){
+	  if($(".markdown-body .subscriptLine").length){
+		$(".markdown-body .subscriptLine").nextAll().remove();
+	  }else{
+		var subxcriptLine = $('<hr class="subscriptLine" style="border:1px dashed #000;">');
+		$(".editormd-preview-container").append(subxcriptLine);
+	  }
+	}
 	var boxSubscripts = [];
 	var boxSubscriptsMatch = [];
 	var subscriptsCounter = 1;
-  	var subscriptsCounterFlag = 0;
+  var subscriptsCounterFlag = 0;
 	$(".markdown-body").children('p').each(function(){
-		var inputStr  = $(this).html().split('<br>');
-		var x;
-		matchTest = false;
-		if(inputStr.length>1){
-			for(x=0; x<inputStr.length; x++){
-				var matchTest = inputStr[x].match(/^( )*\[\^.*?\][:：]/);
-				if(matchTest) break;
-			}
-		}else{
-			var matchTest = inputStr[0].match(/^( )*\[\^.*?\][:：]/);
-		}
-
+		var matchTest = $(this).text().match(/^( )*\[\^.*?\][:：]/);
 		if(matchTest){
 		  var matchSub = matchTest[0].substring(0,matchTest[0].length-1);
-      		  matchSub = matchSub.replace(/^[\s]*/g, "");
+      matchSub = matchSub.replace(/^[\s]*/g, "");
 		  matchBox = {
 			'text' : matchSub,
 			'id'   : subscriptsCounter
 		  };
 		  boxSubscriptsMatch.push(matchBox);
-		  if(inputStr.length==1){
-			var _dom = $(this);
-			_dom.html(_dom.html().replace(/^( )*\[\^.*?\][:：]/,'['+subscriptsCounter+'] : '));
-			var _href = 'Subscripts_'+subscriptsCounter+'_stpircsbuS';
-			_dom.attr('id', _href);
-			_dom.attr('name', _href);
-			boxSubscripts.push(_dom);
-			$(this).remove();
-		  }else{
-			var _dom = $('<p>'+inputStr[x]+'</p>');
-			_dom.html(_dom.html().replace(/^( )*\[\^.*?\][:：]/,'['+subscriptsCounter+'] : '));
-			var _href = 'Subscripts_'+subscriptsCounter+'_stpircsbuS';
-			_dom.attr('id', _href);
-			_dom.attr('name', _href);
-			boxSubscripts.push(_dom);
-			var dropSpecialHtml = '';
-			for(var y =0 ; y<inputStr.length; y++){
-				if(y==x) continue;
-				var br = (y==0)?'':'<br>';
-				dropSpecialHtml += br+inputStr[y];
-			}
-			$(this).html(dropSpecialHtml);
-		  }
-
+		  var _dom = $(this);
+		  _dom.html(_dom.html().replace(/^( )*\[\^.*?\][:：]/,'['+subscriptsCounter+'] : '));
+		  var _href = 'Subscripts_'+subscriptsCounter+'_stpircsbuS';
+		  _dom.attr('id', _href);
+		  _dom.attr('name', _href);
+		  boxSubscripts.push(_dom);
+		  $(this).remove();
 		  subscriptsCounter++;
       if(!subscriptsCounterFlag) subscriptsCounterFlag = 1;
 		}
@@ -258,68 +228,6 @@ var subscript = function(){
 	  });
 	}
 };
-
-var insertHeader = function(author, tags){
-	var header = $('.editormd-preview-container').children().eq(0);
-	if(header.attr('data_author_tag')){return ;}
-	var _html = 
-		'<div data_author_tag="1">'+
-			'<div>'+
-				author+
-			'</div>'+
-			'<div>'+ 
-				tags+
-			'</div>'
-		'</div>';
-	header.before(_html);
-}
-
-var userNameandTabs = function(){
-	var box = false;
-	var i;
-	$(".markdown-body").children('p').each(function(){
-		if(box!==false) return false;
-		var inputStr  = $(this).html().split('<br>');
-		if(inputStr.length>1){
-			for(i=0 ; i<inputStr.length ;i++){
-				if(inputStr[i].match(/^[ ]{0,3}\@\(.*?\)\[.*?\]/)){
-					box = inputStr[i];
-					break;
-				}
-			}
-		}else{
-			if(inputStr[0].match(/^[ ]{0,3}\@\(.*?\)\[.*?\]/)){
-				box = inputStr[0];
-			}
-		}
-		if(box){
-			if(inputStr.length>1){
-				var _html = '';
-				for(var j ; j<inputStr.length; j++){
-					if(j==i) continue;
-					var br = (j==0)?'':'<br>';
-					_html += br+inputStr[y];
-				}
-				$(this).html(_html);
-			}else{
-				$(this).remove();
-			}
-			var separt = box.match(/\)[ ]*\[/);
-			separt = separt[0];
-			var first = box.split(separt)[0].split(/[\(（]/)[1];
-			var second = box.split(separt)[1].split(/\]/)[0].split('|');
-			if(first)
-				first = '<span class="author">'+first+'</span>';
-			secondHtml = '';
-			if(second){    
-				for(var i=0 in second){
-					secondHtml += '<span class="tags">'+second[i]+'</span>';
-				}
-			}
-			insertHeader(first,secondHtml);
-		}
-	});
-} 
 
 var changeDlDtDd = function(){
   $(".editormd-preview-container").children().each(function(){
