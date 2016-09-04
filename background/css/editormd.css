@@ -690,7 +690,7 @@ html{
   margin-top: 35px;
 }
 .editormd .CodeMirror pre {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   padding: 0 .9rem;
 }
 .editormd .CodeMirror-linenumbers {
@@ -3831,7 +3831,7 @@ html{
 
 .editormd-preview-container, .editormd-html-preview {
   text-align: left;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   line-height: 1.6;
   padding: 20px;
   overflow: auto;
@@ -3864,7 +3864,7 @@ html{
   background: #f6f6f6;
   padding: 3px;
   border-radius: 3px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 .editormd-preview-container pre, .editormd-html-preview pre {
   border: 1px solid #ddd;

@@ -176,7 +176,7 @@ var addSubscriptLine = function(){
   if($(".markdown-body .subscriptLine").length){
 	$(".markdown-body .subscriptLine").nextAll().remove();
   }else{
-	var subxcriptLine = $('<hr class="subscriptLine" style="border:1px dashed #000;">');
+	var subxcriptLine = $('<hr class="subscriptLine">');
 	$(".editormd-preview-container").append(subxcriptLine);
   }
 }
@@ -214,6 +214,7 @@ var subscript = function(){
 			var _href = 'Subscripts_'+subscriptsCounter+'_stpircsbuS';
 			_dom.attr('id', _href);
 			_dom.attr('name', _href);
+			_dom.addClass('sub-script');
 			boxSubscripts.push(_dom);
 			$(this).remove();
 		  }else{
@@ -222,6 +223,7 @@ var subscript = function(){
 			var _href = 'Subscripts_'+subscriptsCounter+'_stpircsbuS';
 			_dom.attr('id', _href);
 			_dom.attr('name', _href);
+			_dom.addClass('sub-script');
 			boxSubscripts.push(_dom);
 			var dropSpecialHtml = '';
 			for(var y =0 ; y<inputStr.length; y++){
@@ -263,11 +265,11 @@ var insertHeader = function(author, tags){
 	var header = $('.editormd-preview-container').children().eq(0);
 	if(header.attr('data_author_tag')){return ;}
 	var _html = 
-		'<div data_author_tag="1">'+
-			'<div>'+
+		'<div data_author_tag="1" class="artical-info">'+
+			'<div class="artical-info-author">'+
 				author+
 			'</div>'+
-			'<div>'+ 
+			'<div class = "artical-info-tags">'+ 
 				tags+
 			'</div>'
 		'</div>';

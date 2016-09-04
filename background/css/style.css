@@ -93,6 +93,10 @@ body {
     background: #f6f6f6;
 }
 
+code{
+	padding : 2px !important;
+}
+
 .linenumber:before{
       font-family: 'icomoon';
       content: "\ebcb";
@@ -108,3 +112,51 @@ body {
   font-weight: bold;
   font-family: '微软雅黑' !important;
 }
+
+.data_author_tag{
+  clear:both;
+}
+
+.artical-info-author,.artical-info-tags{
+	float:left;
+}
+
+.artical-info-author .author{
+	font-size:0.7rem !important;
+	display:inline-block !important;
+	color:#FFF !important;
+	background:#bcc2c8 !important;
+	border-radius: 1px !important;
+	padding: 2px 5px !important;
+	margin-right:10px;
+}
+
+.artical-info-tags .tags{
+  font-size:0.7rem !important;
+  display:inline-block !important;
+  color:#8d98a2 !important;
+  background:#eef1f3 !important;
+  border-radius: 1px !important;
+  padding: 2px 5px !important;
+  margin-right:5px;
+}
+
+.subscriptLine{
+ border: 2px;
+ border-style: inset;
+ border-bottom: 0px;
+ border-right: 0;
+ border-left: 0;
+}
+
+.sub-script{
+	font-size:.75rem;
+	color:black;
+}
+.sub-script code{
+	padding : 1px !important;
+}
+.sub-script *{
+	font-size:.75rem;
+}
+
