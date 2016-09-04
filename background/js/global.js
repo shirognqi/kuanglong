@@ -228,8 +228,11 @@ var subscript = function(){
 			var dropSpecialHtml = '';
 			for(var y =0 ; y<inputStr.length; y++){
 				if(y==x) continue;
-				var br = (y==0)?'':'<br>';
-				dropSpecialHtml += br+inputStr[y];
+				var br = '<br>';
+				if(y==inputStr.length-1){
+					br = '';
+				}
+				dropSpecialHtml += inputStr[y]+br;
 			}
 			$(this).html(dropSpecialHtml);
 		  }
@@ -284,29 +287,32 @@ var userNameandTabs = function(){
 		var inputStr  = $(this).html().split('<br>');
 		if(inputStr.length>1){
 			for(i=0 ; i<inputStr.length ;i++){
-				if(inputStr[i].match(/^[ ]{0,3}\@\(.*?\)\[.*?\]/)){
+				if(inputStr[i].match(/^[ ]{0,3}\@[\(（].*?[\)）]\[.*?\]/)){
 					box = inputStr[i];
 					break;
 				}
 			}
 		}else{
-			if(inputStr[0].match(/^[ ]{0,3}\@\(.*?\)\[.*?\]/)){
+			if(inputStr[0].match(/^[ ]{0,3}\@[（\(].*?[\)）]\[.*?\]/)){
 				box = inputStr[0];
 			}
 		}
 		if(box){
-			if(inputStr.length>1){
+			if(inputStr.length > 1){
 				var _html = '';
-				for(var j ; j<inputStr.length; j++){
+				for(var j=0 ; j<inputStr.length; j++){
 					if(j==i) continue;
-					var br = (j==0)?'':'<br>';
-					_html += br+inputStr[y];
+					var br = '<br>';
+					if(j == inputStr.length-1){
+						br = '';
+					}
+					_html = _html+inputStr[j]+br;
 				}
 				$(this).html(_html);
 			}else{
 				$(this).remove();
 			}
-			var separt = box.match(/\)[ ]*\[/);
+			var separt = box.match(/[\)）][ ]*\[/);
 			separt = separt[0];
 			var first = box.split(separt)[0].split(/[\(（]/)[1];
 			var second = box.split(separt)[1].split(/\]/)[0].split('|');
@@ -314,7 +320,8 @@ var userNameandTabs = function(){
 				first = '<span class="author">'+first+'</span>';
 			secondHtml = '';
 			if(second){    
-				for(var i=0 in second){
+				var i;
+				for(i in second){
 					secondHtml += '<span class="tags">'+second[i]+'</span>';
 				}
 			}
@@ -390,4 +397,10 @@ var myPaster = function(){
 		//var html_str = 'text: ' + data.text;
 		//console.log(html_str);
 	});
+}
+
+
+
+function saveLocal(){
+	simpleStorage.set('content',editor.getMarkdown());
 }
