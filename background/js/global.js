@@ -372,17 +372,16 @@ var myPaster = function(){
 	paster.on('focus', function(){}).pastableTextarea().on('blur', function(){});
 
 	paster.on('pasteImage', function(ev, data){
-		  var blobUrl = URL.createObjectURL(data.blob);
-		  var html_str = '<div class="result">image: '+
+		var blobUrl = URL.createObjectURL(data.blob);
+		var html_str = '<div class="result">image: '+
 			data.width+
 			'x'+
 			data.height+
 			'<img src="' + data.dataURL +'" >'+
 			'<a href="' + blobUrl + '">'+blobUrl +'</a>'+
-		  '</div>';
-			
-			editor.insertValue('![剪切板图案2]('+blobUrl+')');
-			console.log(html_str);
+		'</div>';
+		editor.insertValue('![剪切板图案:]('+blobUrl+')');
+		console.log(html_str);
 
 	}).on('pasteImageError', function(ev, data){
 //		var html_str = 'Oops: ' + data.message;
