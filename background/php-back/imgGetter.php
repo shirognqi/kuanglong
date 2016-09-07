@@ -32,6 +32,10 @@ class imgGetter{
 		}
 	}
 	public function imgToFile(){
+		$day = date("Y-m-d");
+		if(!is_dir(UPLOADIMGDIR.$day)){
+			mkdir (UPLOADIMGDIR.$day, 0777);
+		}
 		$base64   = $GLOBALS['imgBase64'];
 		$fileName = $GLOBALS['fileName'];
 
@@ -40,9 +44,12 @@ class imgGetter{
 
 		$fileType = explode('/',$base64_depart[0])[1];
 		$fileType = explode(';',$fileType)[0];
-		$fileLocation = UPLOADIMGDIR.$fileName.'.'.$fileType;
+		$fileLocation = UPLOADIMGDIR.$day.'/'.$fileName.'.'.$fileType;
 		$data= base64_decode($base64_boy);
 		file_put_contents($fileLocation,$data);
+		$ret = new stdClass;
+		$ret->fileName= $day.'/'.$fileName.'.'.$fileType;
+		echo json_encode($ret);
 	}
 }
 

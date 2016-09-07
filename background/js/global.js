@@ -163,11 +163,10 @@ function getInput(){
 	var ret = $('.editormd-preview-container').html();
 
 	ret = specialToNormalStr(ret);
-
-  // var position = editor.getCursor();
-  // editor.insertValue(" ");
-  // editor.setSelection({line:position.line, ch:position.ch}, {line:position.line, ch:(position.ch+1)});
-  // editor.replaceSelection("");
+	var position = editor.getCursor();
+	editor.insertValue(" ");
+	editor.setSelection({line:position.line, ch:position.ch}, {line:position.line, ch:(position.ch+1)});
+	editor.replaceSelection("");
 	return ret;
 
 };
@@ -362,6 +361,9 @@ var changeDlDtDd = function(){
 $(window).resize(function() {
   $("#kuanglong-editor").css("height",$(window).height()+"px");
 });
+var imgCallback = function(data){
+	console.log(data);
+}
 
 var myPaster = function(){
 	var paster = $(".CodeMirror-wrap").find("textarea");
@@ -372,29 +374,19 @@ var myPaster = function(){
 	paster.on('focus', function(){}).pastableTextarea().on('blur', function(){});
 
 	paster.on('pasteImage', function(ev, data){
-		var blobUrl = URL.createObjectURL(data.blob);
-		var html_str = '<div class="result">image: '+
-			data.width+
-			'x'+
-			data.height+
-			'<img src="' + data.dataURL +'" >'+
-			'<a href="' + blobUrl + '">'+blobUrl +'</a>'+
-		'</div>';
-		editor.insertValue('![剪切板图案:]('+blobUrl+')');
-		console.log(html_str);
+		var postAddress = "/kuanglong/background/php-back/imgGetter.php";
+		var postData = {
+			'imgBase64': data.dataURL,
+			'fileName' : Date.parse(new Date())+'_'+data.width+'x'+data.height
+		};
+		$.post(postAddress, postData, function(data,status){
+			var imgUrl = './uploadImgs/'+$.parseJSON(data).fileName;
+			editor.insertValue('![来自剪切板图片]('+ imgUrl +')');
 
+		});
 	}).on('pasteImageError', function(ev, data){
-//		var html_str = 'Oops: ' + data.message;
-//		if(data.url){
-//			html_str += '\n'+ 'But we got its url anyway:' + data.url;
-//			
-//			editor.insertValue('![剪切板图案3]('+data.url+')');
-//		}
-//		console.log(html_str);
 	}).on('pasteText', function(ev, data){
 		editor.insertValue(data.text);
-		//var html_str = 'text: ' + data.text;
-		//console.log(html_str);
 	});
 }
 

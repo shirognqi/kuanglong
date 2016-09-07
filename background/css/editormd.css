@@ -3840,7 +3840,7 @@ html{
 }
 .editormd-preview-container blockquote, .editormd-html-preview blockquote {
   color: #666;
-  border-left: 4px solid #ddd;
+  border-left: 10px solid #e7ecee;
   padding-left: 20px;
   margin-left: 0;
   font-size: 0.8rem;
