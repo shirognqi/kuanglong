@@ -116,7 +116,15 @@ $(function() {
 			
 			var content = simpleStorage.get('content');
 			if(content){
+				var conLen = content.length,
+				scrollTime = conLen/(Math.log(conLen)/Math.log(10)-1);
+				if ( scrollTime < 1000 ) {
+					scrollTime = 1000;
+				}
 				editor.insertValue(content);
+				var scriptStr = "$('.CodeMirror-scroll').animate({'scrollTop':0},"+scrollTime+");";
+				scriptStr     += "$('.editormd-preview').animate({'scrollTop':0},"+scrollTime+");";
+				setTimeout(scriptStr,2500);
 			}
 
 			

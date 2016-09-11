@@ -273,7 +273,8 @@ var insertHeader = function(author, tags){
 			'</div>'+
 			'<div class = "artical-info-tags">'+ 
 				tags+
-			'</div>'
+			'</div>'+
+			'<div style="clear:both;"></div>'+
 		'</div>';
 	header.before(_html);
 }
@@ -390,8 +391,33 @@ var myPaster = function(){
 	});
 }
 
-
-
 function saveLocal(){
 	simpleStorage.set('content',editor.getMarkdown());
+}
+
+function imgLodingError(who){
+	
+//	var fileSrc = $(who).attr('src'),
+//
+//	fileInfo = fileSrc.replace(/\\/g,'/').split('/'),
+//
+//	i=fileInfo.length-1,
+//
+//	fileName = '';
+//
+//	while(i>=0){
+//		fileName = fileInfo[i];
+//		if(fileName !== '') break;
+//		i--;
+//	}
+//
+//	var _html = 
+//		'<a href="'+src+'" tittle="下载文件：'+fileName+'"  class="attachment-placeholder" download="'+fileName+'" target="_blank">'+
+//			'<i class="icon-file-code"></i>'+
+//			'<span class="file-name">'+fileName+'</span>'+
+//			'<span class="file-size">0.6 KB</span>'+
+//		'</a>';
+	who.src='./images/imgLinkBroken.jpeg';
+	$(who).css({height:'80px',width:'80px'});
+	return false;
 }
