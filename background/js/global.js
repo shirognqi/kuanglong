@@ -1,3 +1,36 @@
+
+/**
+ * 解决浏览器outerHTML兼容性问题
+ *
+ **/
+
+if(typeof(HTMLElement)!="undefined" && !window.opera) { 
+	HTMLElement.prototype.__defineGetter__("outerHTML",function() { 
+		var a=this.attributes, 
+		    str="<"+this.tagName, 
+		    i=0;
+		for(;i<a.length;i++) 
+			if(a[i].specified) 
+				str+=" "+a[i].name+'="'+a[i].value+'"'; 
+		if(!this.canHaveChildren) 
+			return str+" />"; 
+		return str+">"+this.innerHTML+"</"+this.tagName+">"; 
+	}); 
+	HTMLElement.prototype.__defineSetter__("outerHTML",function(s) { 
+			var r = this.ownerDocument.createRange(); 
+			r.setStartBefore(this); 
+			var df = r.createContextualFragment(s); 
+			this.parentNode.replaceChild(df, this); 
+			return s; 
+	}); 
+	HTMLElement.prototype.__defineGetter__("canHaveChildren",function() { 
+		return !/^(area|base|basefont|col|frame|hr|img|br|input|isindex|link|meta|param)$/.test(this.tagName.toLowerCase()); 
+	}); 
+}
+/**
+ * 获取浏览器中的代码块；
+ *
+ **/
 function strToSepcial(input){
   var output = input.replace(/>/g,"_@-_@-g-r-e-a-t-t-h-e-n-@_-@_");
   output     = output.replace(/</g,"_@-_@-s-m-a-l-l-e-r-t-h-e-n-@_-@_");

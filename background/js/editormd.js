@@ -2034,7 +2034,8 @@
             if(settings.watch || (!settings.watch && state.preview))
             {
                 previewContainer.html(newMarkdownDoc);
-
+		// nodeDiff(newMarkdownDoc, previewContainer);
+		
                 this.previewCodeHighlight();
                 
                 if (settings.toc) 
