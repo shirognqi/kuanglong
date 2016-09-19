@@ -498,52 +498,52 @@
             var loadPath     = settings.path;
                                 
             var loadFlowChartOrSequenceDiagram = function() {
-                
-                if (editormd.isIE8) 
-                {
+//                
+//                if (editormd.isIE8) 
+//                {
+//                    _this.loadedDisplay();
+//                    
+//                    return ;
+//                }
+//
+//                if (settings.flowChart || settings.sequenceDiagram) 
+//                {
+//                    editormd.loadScript(loadPath + "raphael.min", function() {
+//
+//                        editormd.loadScript(loadPath + "underscore.min", function() {  
+//
+//                            if (!settings.flowChart && settings.sequenceDiagram) 
+//                            {
+//                                editormd.loadScript(loadPath + "sequence-diagram.min", function() {
+//                                    _this.loadedDisplay();
+//                                });
+//                            }
+//                            else if (settings.flowChart && !settings.sequenceDiagram) 
+//                            {      
+//                                editormd.loadScript(loadPath + "flowchart.min", function() {  
+//                                    editormd.loadScript(loadPath + "jquery.flowchart.min", function() {
+//                                        _this.loadedDisplay();
+//                                    });
+//                                });
+//                            }
+//                            else if (settings.flowChart && settings.sequenceDiagram) 
+//                            {  
+//                                editormd.loadScript(loadPath + "flowchart.min", function() {  
+//                                    editormd.loadScript(loadPath + "jquery.flowchart.min", function() {
+//                                        editormd.loadScript(loadPath + "sequence-diagram.min", function() {
+//                                            _this.loadedDisplay();
+//                                        });
+//                                    });
+//                                });
+//                            }
+//                        });
+//
+//                    });
+//                } 
+//                else
+//                {
                     _this.loadedDisplay();
-                    
-                    return ;
-                }
-
-                if (settings.flowChart || settings.sequenceDiagram) 
-                {
-                    editormd.loadScript(loadPath + "raphael.min", function() {
-
-                        editormd.loadScript(loadPath + "underscore.min", function() {  
-
-                            if (!settings.flowChart && settings.sequenceDiagram) 
-                            {
-                                editormd.loadScript(loadPath + "sequence-diagram.min", function() {
-                                    _this.loadedDisplay();
-                                });
-                            }
-                            else if (settings.flowChart && !settings.sequenceDiagram) 
-                            {      
-                                editormd.loadScript(loadPath + "flowchart.min", function() {  
-                                    editormd.loadScript(loadPath + "jquery.flowchart.min", function() {
-                                        _this.loadedDisplay();
-                                    });
-                                });
-                            }
-                            else if (settings.flowChart && settings.sequenceDiagram) 
-                            {  
-                                editormd.loadScript(loadPath + "flowchart.min", function() {  
-                                    editormd.loadScript(loadPath + "jquery.flowchart.min", function() {
-                                        editormd.loadScript(loadPath + "sequence-diagram.min", function() {
-                                            _this.loadedDisplay();
-                                        });
-                                    });
-                                });
-                            }
-                        });
-
-                    });
-                } 
-                else
-                {
-                    _this.loadedDisplay();
-                }
+//                }
             }; 
 
             editormd.loadCSS(loadPath + "codemirror/codemirror.min");
@@ -1502,7 +1502,7 @@
                 var tex  = $(this);
                 editormd.$katex.render(tex.text(), tex[0]);
                 
-                tex.find(".katex").css("font-size", "1.6em");
+                tex.find(".katex").css("font-size", "1.2rem");
             });   
 
             return this;
@@ -1528,12 +1528,27 @@
                 if (flowchartTimer === null) {
                     return this;
                 }
-                
-                previewContainer.find(".flowchart").flowChart(); 
+		$('div.flowchart').each(function(){
+			if($(this).attr('id')) return ;
+			globalInc++;
+			var specialId = 'f_l_o_w_c_h_a_r_t_'+globalInc;
+			$(this).attr('id', specialId);
+			$('#'+specialId+'').flowChart();
+			$(this).show(300);
+		}); 
             }
 
             if (settings.sequenceDiagram) {
-                previewContainer.find(".sequence-diagram").sequenceDiagram({theme: "simple"});
+		$('div.sequence-diagram').each(function(){
+			if($(this).attr('id')) return ;
+			globalInc++;
+			var specialId = 's_e_q_u_e_n_c_e_'+globalInc;
+			$(this).attr('id', specialId);
+			$('#'+specialId+'').sequenceDiagram({theme: 'simple'});
+			$(this).show(300);
+
+		});
+                // previewContainer.find(".sequence-diagram2").sequenceDiagram({theme: "simple"});
             }
                     
             var preview    = $this.preview;
@@ -1564,7 +1579,6 @@
             {                  
                 preview.scrollTop((preview[0].scrollHeight + tocHeight + tocMenuHeight) * percent);
             }
-
             return this;
         },
         
@@ -2033,12 +2047,22 @@
             
             if(settings.watch || (!settings.watch && state.preview))
             {
-                previewContainer.html(newMarkdownDoc);
-		// nodeDiff(newMarkdownDoc, previewContainer);
-		
-                this.previewCodeHighlight();
+                //previewContainer.html(newMarkdownDoc);
+		nodeDiff(newMarkdownDoc, previewContainer);
+		$('div.flowchart').each(function(){
+			if($(this).attr('id')) return ;
+			$(this).hide();
+		});
+		$('div.sequence-diagram').each(function(){
+                	if($(this).attr('id')) return ;
+                	$(this).hide();
+                });
+
+		// console.log(previewContainer.children().length);
                 
-                if (settings.toc) 
+		this.previewCodeHighlight();
+                
+                if (settings.toc)
                 {
                     var tocContainer = (settings.tocContainer === "") ? previewContainer : $(settings.tocContainer);
                     var tocMenu      = tocContainer.find("." + this.classPrefix + "toc-menu");
@@ -2079,16 +2103,18 @@
                         this.katexRender();
                     }
                 }                
-                
+               	$(".editormd-tex").each(function(){
+			$(this).removeClass('editormd-tex').addClass('editormd-tex2');
+		});
                 if (settings.flowChart || settings.sequenceDiagram)
                 {
                     flowchartTimer = setTimeout(function(){
                         clearTimeout(flowchartTimer);
                         _this.flowChartAndSequenceDiagramRender();
-                        flowchartTimer = null;
+                        flowchartTimer = null;	
                     }, 10);
                 }
-
+		// console.log(previewContainer.children().length);
                 if (state.loaded) 
                 {
                     $.proxy(settings.onchange, this)();
@@ -4021,7 +4047,7 @@
                 div.find("." + editormd.classNames.tex).each(function(){
                     var tex  = $(this);                    
                     katex.render(tex.html().replace(/&lt;/g, "<").replace(/&gt;/g, ">"), tex[0]);                    
-                    tex.find(".katex").css("font-size", "1.6em");
+                    tex.find(".katex").css("font-size", "1.2rem");
                 });
             };
             

@@ -160,3 +160,25 @@ code{
 	font-size:.75rem;
 }
 
+.download-big-fount-size{
+	font-size: 2.6rem;
+}
+.download-fileInfo{
+	display: inline-block;
+   	margin-left: 0.4rem;
+	vertical-align: top;
+	font-size:0.7rem;
+}
+
+.download-href-no-line{
+	margin-left: 0.4rem;
+}
+
+.download-href-no-line :hover{
+	text-decoration:none;
+}
+
+blockquote footer{
+	font-size:0.9rem !important;
+}
+

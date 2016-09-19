@@ -1,33 +1,5 @@
 
 /**
- * 解决浏览器outerHTML兼容性问题
- *
- **/
-
-if(typeof(HTMLElement)!="undefined" && !window.opera) { 
-	HTMLElement.prototype.__defineGetter__("outerHTML",function() { 
-		var a=this.attributes, 
-		    str="<"+this.tagName, 
-		    i=0;
-		for(;i<a.length;i++) 
-			if(a[i].specified) 
-				str+=" "+a[i].name+'="'+a[i].value+'"'; 
-		if(!this.canHaveChildren) 
-			return str+" />"; 
-		return str+">"+this.innerHTML+"</"+this.tagName+">"; 
-	}); 
-	HTMLElement.prototype.__defineSetter__("outerHTML",function(s) { 
-			var r = this.ownerDocument.createRange(); 
-			r.setStartBefore(this); 
-			var df = r.createContextualFragment(s); 
-			this.parentNode.replaceChild(df, this); 
-			return s; 
-	}); 
-	HTMLElement.prototype.__defineGetter__("canHaveChildren",function() { 
-		return !/^(area|base|basefont|col|frame|hr|img|br|input|isindex|link|meta|param)$/.test(this.tagName.toLowerCase()); 
-	}); 
-}
-/**
  * 获取浏览器中的代码块；
  *
  **/
@@ -214,183 +186,6 @@ var addSubscriptLine = function(){
 }
 
 
-var subscript = function(){
-	var boxSubscripts = [];
-	var boxSubscriptsMatch = [];
-	var subscriptsCounter = 1;
-  	var subscriptsCounterFlag = 0;
-	$(".markdown-body").children('p').each(function(){
-		var inputStr  = $(this).html().split('<br>');
-		var x;
-		matchTest = false;
-		if(inputStr.length>1){
-			for(x=0; x<inputStr.length; x++){
-				var matchTest = inputStr[x].match(/^( )*\[\^.*?\][:：]/);
-				if(matchTest) break;
-			}
-		}else{
-			var matchTest = inputStr[0].match(/^( )*\[\^.*?\][:：]/);
-		}
-
-		if(matchTest){
-		  var matchSub = matchTest[0].substring(0,matchTest[0].length-1);
-      		  matchSub = matchSub.replace(/^[\s]*/g, "");
-		  matchBox = {
-			'text' : matchSub,
-			'id'   : subscriptsCounter
-		  };
-		  boxSubscriptsMatch.push(matchBox);
-		  if(inputStr.length==1){
-			var _dom = $(this);
-			_dom.html(_dom.html().replace(/^( )*\[\^.*?\][:：]/,'['+subscriptsCounter+'] : '));
-			var _href = 'Subscripts_'+subscriptsCounter+'_stpircsbuS';
-			_dom.attr('id', _href);
-			_dom.attr('name', _href);
-			_dom.addClass('sub-script');
-			boxSubscripts.push(_dom);
-			$(this).remove();
-		  }else{
-			var _dom = $('<p>'+inputStr[x]+'</p>');
-			_dom.html(_dom.html().replace(/^( )*\[\^.*?\][:：]/,'['+subscriptsCounter+'] : '));
-			var _href = 'Subscripts_'+subscriptsCounter+'_stpircsbuS';
-			_dom.attr('id', _href);
-			_dom.attr('name', _href);
-			_dom.addClass('sub-script');
-			boxSubscripts.push(_dom);
-			var dropSpecialHtml = '';
-			for(var y =0 ; y<inputStr.length; y++){
-				if(y==x) continue;
-				var br = '<br>';
-				if(y==inputStr.length-1){
-					br = '';
-				}
-				dropSpecialHtml += inputStr[y]+br;
-			}
-			$(this).html(dropSpecialHtml);
-		  }
-
-		  subscriptsCounter++;
-      if(!subscriptsCounterFlag) subscriptsCounterFlag = 1;
-		}
-	});
-	if(subscriptsCounterFlag){
-	  addSubscriptLine();
-	  var i;
-	  for(i in boxSubscripts){
-  		var box = boxSubscripts[i];
-  		$(".markdown-body").append(box);
-	  }
-	  $(".markdown-body").children().each(function(){
-  		var i;
-  		for(i in boxSubscriptsMatch){
-  			var matchTest = $(this).text().indexOf(boxSubscriptsMatch[i]['text']);
-  			if(matchTest>=0){
-  			  var subscriptsMatch = boxSubscriptsMatch[i];
-  			  var after  = $(this).html().substring($(this).html().lastIndexOf(subscriptsMatch['text']));
-  			  var before = $(this).html().substring(0,$(this).html().lastIndexOf(subscriptsMatch['text']));
-  			  var after  = after.replace(subscriptsMatch['text'],'<sup><a href="#Subscripts_'+subscriptsMatch['id']+'_stpircsbuS">['+subscriptsMatch['id']+']</a></sup>');
-  			  $(this).html(before+after);
-  			}
-  		}
-	  });
-	}
-};
-
-var insertHeader = function(author, tags){
-	var header = $('.editormd-preview-container').children().eq(0);
-	if(header.attr('data_author_tag')){return ;}
-	var _html = 
-		'<div data_author_tag="1" class="artical-info">'+
-			'<div class="artical-info-author">'+
-				author+
-			'</div>'+
-			'<div class = "artical-info-tags">'+ 
-				tags+
-			'</div>'+
-			'<div style="clear:both;"></div>'+
-		'</div>';
-	header.before(_html);
-}
-
-var userNameandTabs = function(){
-	var box = false;
-	var i;
-	$(".markdown-body").children('p').each(function(){
-		if(box!==false) return false;
-		var inputStr  = $(this).html().split('<br>');
-		if(inputStr.length>1){
-			for(i=0 ; i<inputStr.length ;i++){
-				if(inputStr[i].match(/^[ ]{0,3}\@[\(（].*?[\)）]\[.*?\]/)){
-					box = inputStr[i];
-					break;
-				}
-			}
-		}else{
-			if(inputStr[0].match(/^[ ]{0,3}\@[（\(].*?[\)）]\[.*?\]/)){
-				box = inputStr[0];
-			}
-		}
-		if(box){
-			if(inputStr.length > 1){
-				var _html = '';
-				for(var j=0 ; j<inputStr.length; j++){
-					if(j==i) continue;
-					var br = '<br>';
-					if(j == inputStr.length-1){
-						br = '';
-					}
-					_html = _html+inputStr[j]+br;
-				}
-				$(this).html(_html);
-			}else{
-				$(this).remove();
-			}
-			var separt = box.match(/[\)）][ ]*\[/);
-			separt = separt[0];
-			var first = box.split(separt)[0].split(/[\(（]/)[1];
-			var second = box.split(separt)[1].split(/\]/)[0].split('|');
-			if(first)
-				first = '<span class="author">'+first+'</span>';
-			secondHtml = '';
-			if(second){    
-				var i;
-				for(i in second){
-					secondHtml += '<span class="tags">'+second[i]+'</span>';
-				}
-			}
-			insertHeader(first,secondHtml);
-		}
-	});
-} 
-
-var changeDlDtDd = function(){
-  $(".editormd-preview-container").children().each(function(){
-      var nextchild = '';
-      var x = $(this).html().match(/<br>[\:：]\s/gi);
-      if(x){
-          var tempStr = $(this).html();
-          for(var i in x){
-              tempStr = tempStr.replace(x[i],'<_R-B-_BREAK_-B-R_>');
-          }
-          var centensArr= tempStr.split('<br>');
-          for(var i in centensArr){
-              var dldtArr = centensArr[i].split('<_R-B-_BREAK_-B-R_>');
-              var firstFlag = true;
-              for(var j in dldtArr){
-                  if(firstFlag){
-                     firstFlag=false;
-                     nextchild = nextchild + '<dt>'+dldtArr[j]+'</dt>';
-                  }else{
-                     nextchild = nextchild + '<dd>'+dldtArr[j]+'</dd>';
-                  }
-              }
-          }
-          nextchild  = '<dl>'+nextchild+'</dl>';
-          $(this).before(nextchild);
-          $(this).remove();
-      }
-  });
-}
 
 $(window).resize(function() {
   $("#kuanglong-editor").css("height",$(window).height()+"px");
@@ -426,31 +221,134 @@ var myPaster = function(){
 
 function saveLocal(){
 	simpleStorage.set('content',editor.getMarkdown());
+	var tittle = '请输入标题';
+	if($(".add-tittle")){
+		if($(".add-tittle").html() !== ''){
+			tittle = $(".add-tittle").html();
+		}
+	}
+	simpleStorage.set('tittle', tittle);
+}
+
+function isImgFileExtension(inputStr){
+	
+	if(typeof(inputStr)  != 'string' ) return false;
+	
+	var getExtension = inputStr.split('.');
+	if(getExtension.length<=1) return false;
+
+	var fileExtension = getExtension[getExtension.length-1];
+	if(typeof(fileExtension)  != 'string' ) return false;
+	fileExtension = fileExtension.toUpperCase();
+	
+	var IMGExtensions = {
+		'BMP' : 1,
+		'JPG' : 2,
+		'JPEG': 3,
+		'PNG' : 4,
+		'GIF' : 5,
+		'APNG': 6
+	};
+
+	if(IMGExtensions[fileExtension]) return true;
+
+	return false;
 }
 
 function imgLodingError(who){
-	
-//	var fileSrc = $(who).attr('src'),
-//
-//	fileInfo = fileSrc.replace(/\\/g,'/').split('/'),
-//
-//	i=fileInfo.length-1,
-//
-//	fileName = '';
-//
-//	while(i>=0){
-//		fileName = fileInfo[i];
-//		if(fileName !== '') break;
-//		i--;
-//	}
-//
-//	var _html = 
-//		'<a href="'+src+'" tittle="下载文件：'+fileName+'"  class="attachment-placeholder" download="'+fileName+'" target="_blank">'+
-//			'<i class="icon-file-code"></i>'+
-//			'<span class="file-name">'+fileName+'</span>'+
-//			'<span class="file-size">0.6 KB</span>'+
-//		'</a>';
-	who.src='./images/imgLinkBroken.jpeg';
-	$(who).css({height:'80px',width:'80px'});
-	return false;
+	var isIMG;
+	if(typeof(who.src) != 'string') {
+		isIMG = false;
+	}else if(who.src == ''){
+		isIMG = false;
+	}else{
+		isIMG = isImgFileExtension(who.src);
+	}
+	console.log(isIMG);
+	if ( isIMG ) {
+		who.src='./images/imgLinkBroken.jpeg';
+		$(who).css({height:'80px',width:'80px'});
+		return false;
+	} else {
+
+		var fileSrc = $(who).attr('src'),
+
+		fileInfo = fileSrc.replace(/\\/g,'/').split('/'),
+
+		i=fileInfo.length-1,
+
+		fileName = '';
+
+		while(i>=0){
+			fileName = fileInfo[i];
+			if(fileName !== '') break;
+			i--;
+		}
+
+		fileName = (fileName == '') ? '为命名文件':fileName;
+		var subFileName = fileName;
+		if(fileName.length>12){
+			subFileName = fileName.substr(0,12)+'...';
+		}
+		var _html = 
+			'<a href="'+fileSrc.replace(/\\/g,'/')+'" title="下载文件：'+fileName+'"  class="attachment-placeholder download-href-no-line" download="'+fileName+'" target="_blank">'+
+				'<i class="icon-file-code download-big-fount-size"></i>'+
+				'<span class="download-fileInfo">'+
+					'<span class="file-name">'+subFileName+'</span>'+
+					'<br>'+
+					'<span class="file-size">0.6 KB</span>'+
+				'</span>';
+			'</a>';
+		$(who).after(_html);
+		$(who).remove();
+
+	}
 }
+
+function changeSpecialImg(who){
+	who.find('br[src]').each(function(){
+		$(this).after($(this).get(0).outerHTML.replace(/(<br )|(<BR )/g,'<img '));
+		$(this).remove();
+	});
+}
+
+function blockquoteFooter(who){
+	who.children('blockquote').each(function(){
+		if($(this).children().length>1) return ;
+		var _html = $(this).children().eq(0).html();
+		var A = _html.indexOf('-&gt;-&gt;') != -1;
+		var C = _html.indexOf('-》-》') != -1;
+
+		if ( A || C ) {
+			var sp    = (A) ? '-&gt;-&gt;' : '-》-》';
+			var splen = (A) ? 10 : 4;
+			var tail = _html.substring(_html.lastIndexOf(sp)+splen).trim();
+			var head = _html.substring(0,_html.lastIndexOf(sp)).trim();
+			if(tail && head){
+				tail = '<footer class="blockquote-reverse">'+tail+'</footer>';
+				$(this).children().eq(0).html(head).after(tail);
+			}
+		} else {
+
+			var B = _html.indexOf('-&lt;-&lt;') != -1;
+			var D = _html.indexOf('-《-《') != -1;
+			if ( B || D ) {
+				var sp    = (B) ? '-&lt;-&lt;' : '-《-《';
+				var splen = (B) ? 10 : 4;
+				var tail = _html.substring(_html.lastIndexOf(sp)+splen).trim();
+				var head = _html.substring(0,_html.lastIndexOf(sp)).trim();
+				if(tail && head){
+					tail = '<footer>'+tail+'</footer>';
+					$(this).children().eq(0).html(head).after(tail);
+				}    
+			}
+		} 
+
+	});
+
+}
+
+
+
+
+

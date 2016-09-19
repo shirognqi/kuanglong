@@ -14,7 +14,7 @@ $(function() {
 		flowChart  : true,
 		sequenceDiagram : true,
 		taskList : true,
-		delay : 1000,
+		delay : 1500,
 		lineNumbers: false,
 		toolbarIcons : function() {
 			return ["undo","redo","|",
@@ -77,9 +77,10 @@ $(function() {
 			}
 		},
 		onchange : function() {
-			subscript();
-			changeDlDtDd();
-			userNameandTabs();
+			var contentContiner = $(".markdown-body");
+			
+			changeSpecialImg(contentContiner);
+			blockquoteFooter(contentContiner);
 		},
 		htmlDecode : "head,body,meta,link,param,style,script,iframe",
 		onload : function() {
@@ -127,7 +128,11 @@ $(function() {
 				setTimeout(scriptStr,2500);
 			}
 
-			
+			var tittle = simpleStorage.get('tittle');
+			if(tittle){
+				$(".add-tittle").html(tittle).attr('tittle', tittle);
+			}
+				
 			setInterval("saveLocal()",90000);
 			
 
