@@ -50,7 +50,7 @@ function getInput(){
 	  var charBlock = bigBlocks[i];
 	  var charBlockType = charBlock.match(/^(\n```[\s\S]*?\n)/);
 	  if(charBlockType){
-		var type = charBlockType[0].replace(/\n/g,'').replace('```','');
+		var type = charBlockType[0].replace(/\n/g,'').replace('```','').trim();
 		if(!type) type = null;
 		if($.inArray(type,mathBlockKeyWords) != -1) continue;
 		var innerHTMLWithCovers = charBlock;
@@ -150,7 +150,7 @@ function getInput(){
 	  _math   = _math.replace(/\\\)/g,')');
 	  mathBlock.push(_math);
 	}
-	$(".editormd-preview-container .editormd-tex").each(function(index,element){
+	$(".editormd-preview-container .editormd-tex2").each(function(index,element){
 	  var _math = mathBlock.shift();
 	  if($(element).is('span')){
 		_math = ' '+_math+' ';
@@ -264,7 +264,6 @@ function imgLodingError(who){
 	}else{
 		isIMG = isImgFileExtension(who.src);
 	}
-	console.log(isIMG);
 	if ( isIMG ) {
 		who.src='./images/imgLinkBroken.jpeg';
 		$(who).css({height:'80px',width:'80px'});
