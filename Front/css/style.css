@@ -105,6 +105,15 @@ code{
   font-weight: bold !important;
   font-family: '微软雅黑' !important;
 }
+.save-files{
+	font-size:1.5rem;
+}
+
+.save-files:before{
+	font-family: 'icomoon';
+	content: "\e94b";
+	font-size:1rem;
+}
 
 #global_title{
   height: 28px;

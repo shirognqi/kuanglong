@@ -74,11 +74,14 @@ class Index{
 		echo json_encode($ret);
 
  	}
+
+
+
 	/**
-	  * the data from ClipBoard is like that: 
-	  * base64/jpeg;,xxxxxxxxxxxx(Base64Encode)
-	  *
-	  */
+	 * the data from ClipBoard is like that: 
+	 * base64/jpeg;,xxxxxxxxxxxx(Base64Encode)
+	 *
+	 */
 
 	private function imgDataHandler( $imgData ){
 		
@@ -137,7 +140,7 @@ class Index{
 		$this->subDirName = $subDirName;
 		return true;
 	}
-
+	
 
 
 }

@@ -25,7 +25,7 @@ $(function() {
 			"link","reference-link","image","code","preformatted-text","code-block","table","datetime","html-entities","|",
 			//"goto-line","linenumber","watch","preview","fullscreen","clear","search",
 			"goto-line","linenumber","watch","preview",
-			"tittle"
+			"tittle", 'save'
 			];
 		},
 		// toolbarIconTexts : {
@@ -33,7 +33,8 @@ $(function() {
 			// },
 		toolbarIconsClass : {
 			tittle : "add-tittle",
-			linenumber : "linenumber"
+			linenumber : "linenumber",
+			save : "save-files",
 		},
 		toolbarHandlers : {
 			/**
@@ -74,6 +75,9 @@ $(function() {
 			},
 			linenumber : function(cm, icon, cursor, selection){
 
+			},
+			save 	: function(cm, icon, cursor, selection){
+				alert(123456);	
 			}
 		},
 		onchange : function() {
